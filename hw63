@@ -1,0 +1,15 @@
+
+import sys
+from pathlib import Path
+
+
+def show_directory(path):
+    directory = Path(path)
+    print("Selected directory:", directory)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Please provide a directory path.")
+    else:
+        show_directory(sys.argv[1])
