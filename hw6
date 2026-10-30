@@ -1,4 +1,6 @@
+
 def total_salary(path):
+
     total = 0
     count = 0
 
@@ -10,7 +12,16 @@ def total_salary(path):
 
                 name, salary = line.strip().split(",")
 
-                total += int(salary)
+                # Validate employee name and salary
+                if not name.strip():
+                    raise ValueError("Employee name is empty")
+
+                salary = int(salary)
+
+                if salary < 0:
+                    raise ValueError("Salary cannot be negative")
+
+                total += salary
                 count += 1
 
         if count == 0:
@@ -27,8 +38,13 @@ def total_salary(path):
         print("Error: Invalid salary data or file encoding.")
         return 0, 0
 
+    except OSError:
+        print("Error: Unable to read the salary file.")
+        return 0, 0
 
-total, average = total_salary("salary_file.txt")
 
-print(f"Загальна сума заробітної плати: {total}")
-print(f"Середня заробітна плата: {average}")
+if __name__ == "__main__":
+    total, average = total_salary("salary_file.txt")
+
+    print(f"Загальна сума заробітної плати: {total}")
+    print(f"Середня заробітна плата: {average}")
