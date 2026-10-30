@@ -1,14 +1,23 @@
+
 def get_cats_info(path):
+
     cats = []
 
     try:
         with open(path, "r", encoding="utf-8") as file:
             for line in file:
+                # Skip empty lines
                 if not line.strip():
                     continue
 
+                # Split the line into three values
                 cat_id, name, age = line.strip().split(",")
 
+                # Check required fields
+                if not cat_id or not name or not age:
+                    raise ValueError("Missing cat information")
+
+                # Create a dictionary for each cat
                 cat = {
                     "id": cat_id,
                     "name": name,
@@ -17,20 +26,23 @@ def get_cats_info(path):
 
                 cats.append(cat)
 
+        return cats
+
     except FileNotFoundError:
         print("Error: Cats file not found.")
-        return []
 
     except ValueError:
         print("Error: Invalid cats data format.")
-        return []
 
     except UnicodeError:
         print("Error: Invalid file encoding.")
-        return []
 
-    return cats
+    except OSError:
+        print("Error: Unable to read cats file.")
+
+    return []
 
 
-cats_info = get_cats_info("cats_file.txt")
-print(cats_info)
+if __name__ == "__main__":
+    cats_info = get_cats_info("cats_file.txt")
+    print(cats_info)
