@@ -1,0 +1,7 @@
+def total_salary(path):
+    with open(path, "r", encoding="utf-8") as file:
+        for line in file:
+            print(line.strip())
+
+
+total_salary("salary_file.txt")
