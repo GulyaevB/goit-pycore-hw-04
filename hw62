@@ -1,17 +1,33 @@
 def get_cats_info(path):
     cats = []
 
-    with open(path, "r", encoding="utf-8") as file:
-        for line in file:
-            cat_id, name, age = line.strip().split(",")
+    try:
+        with open(path, "r", encoding="utf-8") as file:
+            for line in file:
+                if not line.strip():
+                    continue
 
-            cat = {
-                "id": cat_id,
-                "name": name,
-                "age": age
-            }
+                cat_id, name, age = line.strip().split(",")
 
-            cats.append(cat)
+                cat = {
+                    "id": cat_id,
+                    "name": name,
+                    "age": age
+                }
+
+                cats.append(cat)
+
+    except FileNotFoundError:
+        print("Error: Cats file not found.")
+        return []
+
+    except ValueError:
+        print("Error: Invalid cats data format.")
+        return []
+
+    except UnicodeError:
+        print("Error: Invalid file encoding.")
+        return []
 
     return cats
 
