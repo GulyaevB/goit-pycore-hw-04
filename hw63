@@ -1,31 +1,80 @@
 
 import sys
 from pathlib import Path
+from colorama import Fore, Style, init
 
 
-def show_directory(path, indent=0):
-    directory = Path(path)
+# Enable colored output on Windows
+init(autoreset=True)
 
-    if indent == 0:
-        print(directory.name + "/")
 
-    items = sorted(
-        directory.iterdir(),
-        key=lambda item: (item.is_file(), item.name.lower())
-    )
+def show_directory(directory, prefix=""):
+    """
+    Display the directory structure recursively.
 
-    for item in items:
-        spaces = "    " * indent
+    """
 
-        if item.is_dir():
-            print(spaces + "  " + item.name + "/")
-            show_directory(item, indent + 1)
-        else:
-            print(spaces + "  " + item.name)
+    try:
+        items = sorted(
+            directory.iterdir(),
+            key=lambda item: (item.is_file(), item.name.lower())
+        )
+
+        for index, item in enumerate(items):
+            is_last = index == len(items) - 1
+            connector = "└── " if is_last else "├── "
+
+            if item.is_dir():
+                print(
+                    prefix + connector
+                    + Fore.BLUE + item.name + "/"
+                    + Style.RESET_ALL
+                )
+
+                # Continue exploring nested folders
+                new_prefix = prefix + (
+                    "    " if is_last else "│   "
+                )
+                show_directory(item, new_prefix)
+
+            else:
+                print(
+                    prefix + connector
+                    + Fore.GREEN + item.name
+                    + Style.RESET_ALL
+                )
+
+    except (PermissionError, OSError) as error:
+        print(
+            prefix + Fore.RED
+            + f"Error reading directory: {error}"
+        )
+
+
+def main():
+    """
+    Read a directory path from command-line arguments.
+    """
+
+    if len(sys.argv) != 2:
+        print("Usage: python hw3.py <directory_path>")
+        return
+
+    directory = Path(sys.argv[1])
+
+    # Check if the path exists
+    if not directory.exists():
+        print(Fore.RED + "Error: Path does not exist.")
+        return
+
+    # Check if the path is a directory
+    if not directory.is_dir():
+        print(Fore.RED + "Error: Path is not a directory.")
+        return
+
+    print(Fore.BLUE + directory.name + "/")
+    show_directory(directory)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Please provide a directory path.")
-    else:
-        show_directory(sys.argv[1])
+    main()
