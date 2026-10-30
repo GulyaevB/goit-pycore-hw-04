@@ -5,7 +5,14 @@ from pathlib import Path
 
 def show_directory(path):
     directory = Path(path)
-    print("Selected directory:", directory)
+
+    print("Directory:", directory.name)
+
+    for item in directory.iterdir():
+        if item.is_dir():
+            print("[DIR]", item.name)
+        else:
+            print("[FILE]", item.name)
 
 
 if __name__ == "__main__":
