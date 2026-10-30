@@ -3,16 +3,25 @@ import sys
 from pathlib import Path
 
 
-def show_directory(path):
+def show_directory(path, indent=0):
     directory = Path(path)
 
-    print("Directory:", directory.name)
+    if indent == 0:
+        print(directory.name + "/")
 
-    for item in directory.iterdir():
+    items = sorted(
+        directory.iterdir(),
+        key=lambda item: (item.is_file(), item.name.lower())
+    )
+
+    for item in items:
+        spaces = "    " * indent
+
         if item.is_dir():
-            print("[DIR]", item.name)
+            print(spaces + "  " + item.name + "/")
+            show_directory(item, indent + 1)
         else:
-            print("[FILE]", item.name)
+            print(spaces + "  " + item.name)
 
 
 if __name__ == "__main__":
